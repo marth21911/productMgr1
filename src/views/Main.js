@@ -16,15 +16,12 @@ useEffect (() =>{
         })
         .catch(err => console.error(err));
 },[]);
-// const removeFromDom = productID => {
-//     setProduct(product.filter(product => product._id != productID));
-// }
 
 return (
     <div>
-        <ProductForm/>
+        <ProductForm setProduct = {setProduct}/>
         <hr/>
-        {loaded && <ProductList product={product}/>}
+        <ProductList product={product}/>
     </div>
     );
 }

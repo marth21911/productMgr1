@@ -1,14 +1,28 @@
 import React, {useEffect, useState} from 'react'
 import axios from 'axios'
-export default props =>{
+import { useParams, Link, useHistory } from 'react-router-dom';
+
     // const {initialProductName, initialPrice, initialDescription, onSubmitProp} = props;
-    const [name, setProductName] = useState ("");
+    
+const Update = (props) => {
+    const history = useHistory();
+    const {id} = useParams ();
     const [price, setPrice] = useState ("");
     const [description, setDescription] = useState("");
-    const {setProduct} = props
-    const onSubmitHandler = e => {
+    const [name, setName] = useState("");
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/api/products/' + id)
+            .then(res => {
+                setName(res.data.name);
+                setPrice(res.data.price);
+                setDescription(res.data.description);
+            })
+    }, []);
+
+    const updateProduct = e => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/products/create', {
+        axios.patch('http://localhost:8000/api/products/' + id, {
             name,
             price,
             description
@@ -16,12 +30,14 @@ export default props =>{
             .then(res =>console.log(res))
             .catch(err =>console.log(err))
         // onSubmitProp({productName, price, description});
+        history.push("/products");
     }
     return(
-        <form onSubmit= {onSubmitHandler}>
+        
+        <form onSubmit= {updateProduct}>
             <div className="form-group">
                 <label for="product">Product Name</label>
-                    <input  onChange={(e) => { setProductName(e.target.value)}} name= "product" type="text" className="form-control" value={name} placeholder="Product Name"/>
+                    <input  onChange={(e) => { setName(e.target.value)}} name= "product" type="text" className="form-control" value={name} placeholder="Product Name"/>
             </div>
             <div className="form-group">
                 <label for="price">Price</label>
@@ -35,3 +51,4 @@ export default props =>{
         </form>
     )
 }
+export default Update
